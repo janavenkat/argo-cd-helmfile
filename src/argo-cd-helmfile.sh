@@ -73,6 +73,7 @@ phase=$1
 # HELM_HOME is deprecated with helm-v3, uses XDG dirs
 export HELM_HOME="/tmp/__${SCRIPT_NAME}__/apps/${ARGOCD_APP_NAME}"
 export HELMFILE_HELMFILE_HELMFILED="${PWD}/.__${SCRIPT_NAME}__helmfile.d"
+export HOME="${HELM_HOME}"
 
 if [[ ! -d "/tmp/__${SCRIPT_NAME}__/bin" ]]; then
   mkdir -p "/tmp/__${SCRIPT_NAME}__/bin"
@@ -90,6 +91,9 @@ if [[ "${HELMFILE_BINARY}" ]]; then
 else
   if [[ $(which helmfile) ]]; then
     helmfile="$(which helmfile)"
+#    helm plugin install https://github.com/futuresimple/helm-secrets --version 2.0.2 || true
+#    helm2 init --client-only || true
+#    helm2 plugin install https://github.com/futuresimple/helm-secrets --version 2.0.2 || true
   else
     LOCAL_HELMFILE_BINARY="/tmp/__${SCRIPT_NAME}__/bin/helmfile"
     if [[ ! -x "${LOCAL_HELMFILE_BINARY}" ]]; then
@@ -120,7 +124,7 @@ helm_full_version=$(${helm} version --short --client | cut -d " " -f2)
 helm_major_version=$(echo "${helm_full_version}" | cut -d "." -f1 | sed 's/[^0-9]//g')
 
 # set home variable to ensure apps do NOT overlap settings/repos/etc
-export HOME="${HELM_HOME}"
+#export HOME="${HELM_HOME}"
 
 echoerr "$(${helm} version --short --client)"
 echoerr "$(${helmfile} --version)"
