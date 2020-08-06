@@ -91,9 +91,18 @@ if [[ "${HELMFILE_BINARY}" ]]; then
 else
   if [[ $(which helmfile) ]]; then
     helmfile="$(which helmfile)"
-#    helm plugin install https://github.com/futuresimple/helm-secrets --version 2.0.2 || true
-#    helm2 init --client-only || true
-#    helm2 plugin install https://github.com/futuresimple/helm-secrets --version 2.0.2 || true
+    output=$(helm plugin install https://github.com/futuresimple/helm-secrets || true)
+    if [ $? -ne 0 ]; then
+        echo ":x: Failed installing plugin"
+        echo "$output"
+        exit 1;
+    fi
+    output1=$(helm2 init --client-only  || true ; helm plugin install https://github.com/futuresimple/helm-secrets  || true)
+    if [ $? -ne 0 ]; then
+        echo ":x: Failed installing helm2 plugin"
+        echo "$output1"
+        exit 1;
+    fi
   else
     LOCAL_HELMFILE_BINARY="/tmp/__${SCRIPT_NAME}__/bin/helmfile"
     if [[ ! -x "${LOCAL_HELMFILE_BINARY}" ]]; then
