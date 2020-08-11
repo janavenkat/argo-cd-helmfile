@@ -230,13 +230,18 @@ case $phase in
       INTERNAL_HELM_TEMPLATE_OPTIONS="${INTERNAL_HELM_TEMPLATE_OPTIONS} --api-versions=${KUBE_API_VERSIONS}"
     fi
 
+    echo ${helmfile}
+    echo ${INTERNAL_HELMFILE_TEMPLATE_OPTIONS}
+    echo ${INTERNAL_HELM_TEMPLATE_OPTIONS} && ${HELM_TEMPLATE_OPTIONS}
+    echo ${HELMFILE_TEMPLATE_OPTIONS}
+
     ${helmfile} \
       template \
       --skip-deps ${INTERNAL_HELMFILE_TEMPLATE_OPTIONS} \
       --args "${INTERNAL_HELM_TEMPLATE_OPTIONS} ${HELM_TEMPLATE_OPTIONS}" \
       ${HELMFILE_TEMPLATE_OPTIONS}
+    exit 1
     ;;
-
   *)
     echoerr "invalid invocation"
     exit 1
